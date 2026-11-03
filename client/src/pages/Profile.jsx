@@ -2,8 +2,8 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import "../styles/Profile.css";
-
-const API_URL = "http://localhost:7001/api/auth/profile";
+import API_BASE_URL from "../config/api";
+const API_URL = `${API_BASE_URL}/api/auth/profile`;
 
 function Profile() {
   const { user, login } = useAuth();

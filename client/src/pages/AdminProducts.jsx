@@ -1,7 +1,7 @@
 
 import { useEffect, useState } from "react";
 import "../styles/AdminProducts.css";
-
+import API_BASE_URL from "../config/api";
 const emptyForm = {
   name: "",
   category: "Men",
@@ -11,7 +11,7 @@ const emptyForm = {
   stock: "0",
 };
 
-const API = "http://localhost:7001";
+const API = API_BASE_URL;
 
 function AdminProducts() {
   const [form, setForm] = useState(emptyForm);

@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import "../styles/AdminDashboard.css";
-
+import API_BASE_URL from "../config/api";
 function AdminDashboard() {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -22,7 +22,7 @@ function AdminDashboard() {
       }
 
       const response = await fetch(
-        "http://localhost:7001/api/admin/orders",
+       `${API_BASE_URL}/api/admin/orders`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -48,7 +48,7 @@ function AdminDashboard() {
   async function updateOrderStatus(orderId, status) {
     try {
       const response = await fetch(
-        `http://localhost:7001/api/admin/orders/${orderId}/status`,
+        `${API_BASE_URL}/api/admin/orders/${orderId}/status`,
         {
           method: "PATCH",
           headers: {

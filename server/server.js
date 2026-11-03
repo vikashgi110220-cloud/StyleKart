@@ -1,3 +1,6 @@
+
+require("dotenv").config();
+
 const express = require("express");
 const cors = require("cors");
 const pool = require("./config/db");
@@ -7,8 +10,6 @@ const {
   authenticateToken,
   requireAdmin,
 } = require("./middleware/authMiddleware");
-
-require("dotenv").config();
 
 const app = express();
 
@@ -127,7 +128,6 @@ app.get("/api/products/:id/reviews", async (req, res) => {
         Number(ratingData[0].average_rating).toFixed(1)
       ),
     });
-
   } catch (error) {
     console.error("Fetch reviews error:", error.message);
 
@@ -138,15 +138,15 @@ app.get("/api/products/:id/reviews", async (req, res) => {
   }
 });
 
-
-
-// POST: Add Product Review (Verified Purchase Only)
+// ========================================
+// POST: ADD PRODUCT REVIEW
+// VERIFIED PURCHASE ONLY
+// ========================================
 app.post("/api/reviews", authenticateToken, async (req, res) => {
   try {
     const userId = req.user.id;
     const { product_id, rating, comment } = req.body;
 
-    // Validate product ID
     if (!Number.isInteger(Number(product_id)) || Number(product_id) <= 0) {
       return res.status(400).json({
         success: false,
@@ -154,7 +154,6 @@ app.post("/api/reviews", authenticateToken, async (req, res) => {
       });
     }
 
-    // Validate rating
     if (!Number.isInteger(rating) || rating < 1 || rating > 5) {
       return res.status(400).json({
         success: false,
@@ -162,7 +161,6 @@ app.post("/api/reviews", authenticateToken, async (req, res) => {
       });
     }
 
-    // Validate comment
     if (comment && typeof comment !== "string") {
       return res.status(400).json({
         success: false,
@@ -170,7 +168,6 @@ app.post("/api/reviews", authenticateToken, async (req, res) => {
       });
     }
 
-    // Check product exists
     const [products] = await pool.query(
       "SELECT id FROM products WHERE id = ?",
       [Number(product_id)]
@@ -183,7 +180,6 @@ app.post("/api/reviews", authenticateToken, async (req, res) => {
       });
     }
 
-    // Check verified purchase (Cancelled orders excluded)
     const [purchases] = await pool.query(
       `SELECT oi.id
        FROM order_items oi
@@ -202,7 +198,6 @@ app.post("/api/reviews", authenticateToken, async (req, res) => {
       });
     }
 
-    // Insert review
     const [result] = await pool.query(
       `INSERT INTO reviews (product_id, user_id, rating, comment)
        VALUES (?, ?, ?, ?)`,
@@ -214,7 +209,6 @@ app.post("/api/reviews", authenticateToken, async (req, res) => {
       message: "Review submitted successfully",
       reviewId: result.insertId,
     });
-
   } catch (error) {
     if (error.code === "ER_DUP_ENTRY") {
       return res.status(409).json({
@@ -231,7 +225,6 @@ app.post("/api/reviews", authenticateToken, async (req, res) => {
     });
   }
 });
-
 
 // ========================================
 // TEST ROUTE
@@ -339,7 +332,7 @@ app.get("/api/orders/:id", authenticateToken, async (req, res) => {
 });
 
 // ========================================
-// POST: PLACE A NEW ORDER - AUTHENTICATED
+// POST: PLACE A NEW ORDER
 // ========================================
 app.post("/api/orders", authenticateToken, async (req, res) => {
   let connection;
@@ -357,7 +350,6 @@ app.post("/api/orders", authenticateToken, async (req, res) => {
       items,
     } = req.body;
 
-    // 1. Validate customer details
     if (
       !customer_name?.trim() ||
       !phone?.trim() ||
@@ -371,7 +363,6 @@ app.post("/api/orders", authenticateToken, async (req, res) => {
       });
     }
 
-    // 2. Validate cart items
     if (!Array.isArray(items) || items.length === 0) {
       return res.status(400).json({
         success: false,
@@ -401,14 +392,12 @@ app.post("/api/orders", authenticateToken, async (req, res) => {
       seenIds.add(id);
     }
 
-    // 3. Start database transaction
     await connection.beginTransaction();
     transactionStarted = true;
 
     let totalAmount = 0;
     const verifiedItems = [];
 
-    // 4. Verify prices and stock from MySQL
     for (const item of items) {
       const productId = Number(item.product_id);
       const quantity = Number(item.quantity);
@@ -453,7 +442,6 @@ app.post("/api/orders", authenticateToken, async (req, res) => {
       });
     }
 
-    // 5. Save order with authenticated user's ID
     const [orderResult] = await connection.query(
       `INSERT INTO orders
        (
@@ -481,7 +469,6 @@ app.post("/api/orders", authenticateToken, async (req, res) => {
 
     const orderId = orderResult.insertId;
 
-    // 6. Save order items and reduce stock
     for (const item of verifiedItems) {
       await connection.query(
         `INSERT INTO order_items
@@ -504,7 +491,6 @@ app.post("/api/orders", authenticateToken, async (req, res) => {
       );
     }
 
-    // 7. Commit transaction
     await connection.commit();
     transactionStarted = false;
 
@@ -516,7 +502,6 @@ app.post("/api/orders", authenticateToken, async (req, res) => {
       paymentMethod: "COD",
       orderStatus: "Pending",
     });
-
   } catch (error) {
     if (connection && transactionStarted) {
       try {
@@ -532,7 +517,6 @@ app.post("/api/orders", authenticateToken, async (req, res) => {
       success: false,
       message: "Failed to place order.",
     });
-
   } finally {
     if (connection) {
       connection.release();
@@ -804,7 +788,7 @@ app.delete(
 
       res.json({
         success: true,
-        message: "Product deleted successfully!",
+        message: "Product deleted successfully.",
       });
     } catch (error) {
       if (error.code === "ER_ROW_IS_REFERENCED_2") {
@@ -831,5 +815,5 @@ app.delete(
 const PORT = process.env.PORT || 7001;
 
 app.listen(PORT, () => {
-  console.log(`Server running at http://localhost:${PORT}`);
+  console.log(`StyleKart server running on port ${PORT}`);
 });

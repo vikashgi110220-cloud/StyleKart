@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import "../styles/HomePage.css";
-
+import API_BASE_URL from "../config/api";
 function HomePage() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -11,7 +11,7 @@ function HomePage() {
     async function fetchProducts() {
       try {
         const response = await fetch(
-          "http://localhost:7001/api/products"
+         `${API_BASE_URL}/api/products`
         );
 
         if (!response.ok) {

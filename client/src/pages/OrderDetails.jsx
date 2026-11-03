@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import "../styles/OrderDetails.css";
-
+import API_BASE_URL from "../config/api";
 const orderSteps = ["Pending", "Processing", "Shipped", "Delivered"];
 
 function OrderTracking({ status }) {
@@ -69,7 +69,7 @@ function OrderDetails() {
         setError("");
 
         const response = await fetch(
-          `http://localhost:7001/api/orders/${id}`,
+          `${API_BASE_URL}/api/orders/${id}`,
           {
             method: "GET",
             headers: {

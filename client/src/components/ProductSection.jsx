@@ -1,9 +1,8 @@
-
 import { useEffect, useState } from "react";
 import ProductCard from "./ProductCard";
 import ProductFilters from "./ProductFilters";
 import "../styles/Products.css";
-
+import API_BASE_URL from "../config/api";
 function ProductSection() {
   const [products, setProducts] = useState([]);
   const [search, setSearch] = useState("");
@@ -22,10 +21,9 @@ function ProductSection() {
         setLoading(true);
         setError("");
 
-        const response = await fetch(
-          "http://localhost:7001/api/products",
-          { signal: controller.signal }
-        );
+        const response = await fetch(`${API_BASE_URL}/api/products`, {
+          signal: controller.signal,
+        });
 
         const data = await response.json();
 
@@ -33,20 +31,16 @@ function ProductSection() {
 
         if (!response.ok) {
           throw new Error(
-            data.message || `Request failed (${response.status})`
+            data.message || `Request failed (${response.status})`,
           );
         }
 
         // Support both { success: true, products: [...] }
         // and a direct array response.
-        const productList = Array.isArray(data)
-          ? data
-          : data.products;
+        const productList = Array.isArray(data) ? data : data.products;
 
         if (!Array.isArray(productList)) {
-          throw new Error(
-            "Invalid API response: products array not found."
-          );
+          throw new Error("Invalid API response: products array not found.");
         }
 
         setProducts(productList);
@@ -91,9 +85,7 @@ function ProductSection() {
       }
 
       if (sort === "name") {
-        return String(a.name || "").localeCompare(
-          String(b.name || "")
-        );
+        return String(a.name || "").localeCompare(String(b.name || ""));
       }
 
       return 0;
@@ -123,9 +115,7 @@ function ProductSection() {
         </div>
 
         <span className="products-count">
-          {loading
-            ? "Loading..."
-            : `${filteredProducts.length} products`}
+          {loading ? "Loading..." : `${filteredProducts.length} products`}
         </span>
       </div>
 
@@ -155,18 +145,13 @@ function ProductSection() {
       ) : filteredProducts.length > 0 ? (
         <div className="products-grid">
           {filteredProducts.map((product) => (
-            <ProductCard
-              key={product.id}
-              product={product}
-            />
+            <ProductCard key={product.id} product={product} />
           ))}
         </div>
       ) : (
         <div className="no-products">
           <h3>No products found</h3>
-          <p>
-            Try another search or choose a different category.
-          </p>
+          <p>Try another search or choose a different category.</p>
 
           <button type="button" onClick={clearFilters}>
             Clear Filters

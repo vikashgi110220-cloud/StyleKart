@@ -4,7 +4,7 @@ import { useParams, Link } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 import { useAuth } from "../context/AuthContext";
 import "../styles/ProductDetails.css";
-
+import API_BASE_URL from "../config/api";
 function ProductDetails() {
   const { id } = useParams();
   const { addToCart } = useCart();
@@ -37,7 +37,7 @@ function ProductDetails() {
         setQuantity(1);
 
         const response = await fetch(
-          "http://localhost:7001/api/products"
+        `${API_BASE_URL}/api/products`
         );
 
         const data = await response.json();
@@ -82,7 +82,7 @@ function ProductDetails() {
       setReviewLoading(true);
 
       const response = await fetch(
-        `http://localhost:7001/api/products/${id}/reviews`
+        `${API_BASE_URL}/api/products/${id}/reviews`
       );
 
       const data = await response.json();
@@ -134,7 +134,7 @@ function ProductDetails() {
       setSubmitting(true);
 
       const response = await fetch(
-        "http://localhost:7001/api/reviews",
+       `${API_BASE_URL}/api/reviews`,
         {
           method: "POST",
           headers: {
