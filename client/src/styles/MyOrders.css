@@ -447,3 +447,119 @@
     justify-content: space-between;
   }
 }
+
+/* Responsive My Orders Fix */
+.my-orders-page,
+.my-orders-page * {
+  box-sizing: border-box;
+}
+
+.my-orders-page {
+  width: 100%;
+  max-width: 1100px;
+  min-width: 0;
+  overflow-x: clip;
+}
+
+.orders-list,
+.order-card {
+  width: 100%;
+  min-width: 0;
+}
+
+.order-card-header,
+.order-header-actions,
+.order-meta,
+.order-total {
+  min-width: 0;
+}
+
+.order-meta strong {
+  overflow-wrap: anywhere;
+}
+
+.order-table-wrapper {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.order-table {
+  width: 100%;
+  min-width: 520px;
+}
+
+@media (max-width: 600px) {
+  .my-orders-page {
+    margin: 25px auto;
+    padding: 0 12px;
+  }
+
+  .orders-header {
+    text-align: center;
+    margin-bottom: 25px;
+  }
+
+  .orders-header h1 {
+    font-size: 27px;
+  }
+
+  .orders-header p {
+    font-size: 13px;
+    line-height: 1.5;
+  }
+
+  .order-card {
+    padding: 14px;
+    margin-bottom: 18px;
+  }
+
+  .order-card-header {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .order-header-actions {
+    width: 100%;
+    justify-content: space-between;
+    gap: 8px;
+  }
+
+  .view-order-button {
+    padding: 9px 11px;
+    white-space: nowrap;
+  }
+
+  .order-meta {
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .order-tracking {
+    padding: 15px 8px;
+  }
+
+  .tracking-steps {
+    gap: 2px;
+  }
+
+  .tracking-step span {
+    font-size: 10px;
+    white-space: normal;
+  }
+
+  .step-circle {
+    width: 28px;
+    height: 28px;
+  }
+
+  .order-products h3 {
+    text-align: center;
+  }
+
+  .order-total strong {
+    font-size: 19px;
+  }
+}
